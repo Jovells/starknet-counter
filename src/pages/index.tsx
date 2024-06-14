@@ -10,41 +10,18 @@ import {
 import abi from "../abi/abi.json";
 import { COUNTER_CONTRACT_ADDRESS } from "@/util/constant";
 import { useMemo, useState } from "react";
-useMemo;
+
 function App() {
-  const { connect, connectors } = useConnect();
-  const { disconnect } = useDisconnect();
-  const { isConnected, address } = useAccount();
-  const [value, setValue] = useState(0)
+  // const { connect, connectors } = useConnect();
+  // const { disconnect } = useDisconnect();
+  // const { isConnected, address } = useAccount();
+  const [value, setValue] = useState<number>(0)
+  const [isConnected,] = useState<boolean>(false)
 
-  // const { data, isError, isLoading, error } = useContractRead({
-  //   functionName: "get_counter",
-  //   abi,
-  //   address: COUNTER_CONTRACT_ADDRESS,
-  //   watch: true,
-  // });
+// increment counter: write action
 
-  // write action
-  // const { contract } = useContract({
-  //   abi: abi,
-  //   address: COUNTER_CONTRACT_ADDRESS,
-  // });
 
-  // const calls: any = useMemo(() => {
-  //   if (!address || !contract) {
-  //     return [];
-  //   }
-  //   return contract.populateTransaction["increment_counter"]!()
-  // }, [contract, address]);
-
-  // const {
-  //   writeAsync,
-  //   data: result,
-  //   isPending,
-  // } = useContractWrite({
-  //   calls,
-  // });
-
+// get counter value: read action
   const handleGetCount = async() =>{
 
   }
@@ -63,7 +40,6 @@ function App() {
         {isConnected ? (
           <button
             className="bg-gray-400 p-2 rounded-lg"
-            onClick={() => disconnect()}
             type="button"
           >
             Disconnect
@@ -90,7 +66,7 @@ function App() {
         <div className="">
           <div className="text-center my-4">
             <h2>Ensure to connect to Sepolia Test network! </h2>
-            <p className="description">Connected Address: {address}</p>
+            <p className="description">Connected Address: {""}</p>
             <h2>
               {/* Count: {isLoading && "Loading"} {value} */}
             </h2>
