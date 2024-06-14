@@ -8,6 +8,6 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <StarknetProvider>
       <Component {...pageProps} />
-    </StarknetProvider>
+    // </StarknetProvider>
   )
 }

@@ -12,17 +12,43 @@ import { COUNTER_CONTRACT_ADDRESS } from "@/util/constant";
 import { useMemo, useState } from "react";
 
 function App() {
-  // const { connect, connectors } = useConnect();
-  // const { disconnect } = useDisconnect();
-  // const { isConnected, address } = useAccount();
+  const { connect, connectors } = useConnect();
+  const { disconnect } = useDisconnect();
+ const {isConnected, address} = useAccount()
   const [value, setValue] = useState<number>(0)
-  const [isConnected,] = useState<boolean>(false)
 
+
+
+// read state 
+const { data, isError, isLoading, error } = useContractRead({
+  functionName: "get_counter",
+  abi,
+  address: COUNTER_CONTRACT_ADDRESS,
+  watch: true,
+});
 // increment counter: write action
+const { contract } = useContract({
+  abi: abi,
+  address: COUNTER_CONTRACT_ADDRESS,
+});
 
+const calls = useMemo(() => {
+  if (!address || !contract) return;
+  return contract.populateTransaction["increment_counter"]!();
+}, [contract, address]);
+
+const {
+  writeAsync,
+  data:result,
+  isPending,
+} = useContractWrite({
+  calls,
+});
 
 // get counter value: read action
   const handleGetCount = async() =>{
+    let counter = await contract?.get_counter();
+    setValue(counter?.toString())
 
   }
 
@@ -39,42 +65,40 @@ function App() {
 
         {isConnected ? (
           <button
+          onClick={() => disconnect()}
             className="bg-gray-400 p-2 rounded-lg"
             type="button"
           >
             Disconnect
           </button>
         ) : (
-          // <div className="flex justify-between ">
-          //   {connectors.map((connector) => (
-          //     <div className="mr-2" key={connector.id}>
-          //       <button onClick={() => connect({ connector })}>
-          //         {connector.name}
-          //       </button>
-          //     </div>
-          //   ))}
-          // </div>
-          <button
-          className="bg-gray-400 p-2 rounded-lg"
-          type="button"
-        >
-          Connect
-        </button>
+          <div className="flex justify-between ">
+            {connectors.map((connector) => (
+              <div className="mr-2" key={connector.id}>
+                <button onClick={() => connect({ connector })}>
+                  {connector.name}
+                </button>
+              </div>
+            ))}
+          </div>
         )}
       </header>
       <main className="flex justify-center">
         <div className="">
           <div className="text-center my-4">
             <h2>Ensure to connect to Sepolia Test network! </h2>
-            <p className="description">Connected Address: {""}</p>
+            <p className="description">Connected Address: {address}</p>
             <h2>
-              {/* Count: {isLoading && "Loading"} {value} */}
+              Count: {isLoading && "Loading"} {data?.toString()}
+            </h2>
+            <h2>
+              value:  {value}
             </h2>
             {/* <h2>{isError && error?.message}</h2> */}
             <div>
               <div className="flex justify-center space-x-4 my-4">
                 <div>
-                  <button  className="bg-green-500 p-2 rounded-lg" type="button">
+                  <button onClick={() =>  writeAsync()} className="bg-green-500 p-2 rounded-lg" type="button">
                     Increment Counter
                   </button>
                 </div>
